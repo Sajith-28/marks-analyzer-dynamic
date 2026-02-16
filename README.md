@@ -134,7 +134,7 @@ if st.checkbox("Show all saved records"):
 
 1. Enter 2 students:  
    - sajith: -90.00
-   - raju: 45 
+   - raju: 40.00 
 
 **Output Screenshot:**  
 
