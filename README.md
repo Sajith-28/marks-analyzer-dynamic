@@ -216,6 +216,8 @@ if st.checkbox("Show all saved records"):
 ### ⚙️ `config.py` File
 <img width="1209" height="459" alt="image" src="https://github.com/user-attachments/assets/fcd03a6e-0cb2-4167-84a4-71557b133355" />
 
+<img width="1236" height="451" alt="image" src="https://github.com/user-attachments/assets/8083ed12-832f-488f-bc52-8dea0e4e29d0" />
+
 ---
 
 ### 🌐 GitHub Repository View
