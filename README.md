@@ -111,9 +111,9 @@ marks-analyzer-dynamic/
 import streamlit as st
 from pymongo import MongoClient
 from datetime import datetime
-import config
 
 # ---------------- MongoDB Connection ----------------
+import config
 client = MongoClient(config.MONGO_URL)
 db = client[config.DB_NAME]
 collection = db[config.COLLECTION_NAME]
