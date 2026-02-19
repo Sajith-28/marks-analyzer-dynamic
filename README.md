@@ -1,55 +1,122 @@
-# Dynamic Student Marks Analyzer with MongoDB
+# Student Marks Analyzer – GitHub & Environment Configuration Task
 
-A **Streamlit app** to input student names and marks (including negative values), calculate the average, identify students scoring above average, and save all data to **MongoDB**. Supports **error correction** scenarios.
+## Project Overview
 
----
+The **Student Marks Analyzer** is a dynamic **Streamlit-based Python application** that allows users to enter student names and marks (including negative values), calculate the average score, identify students scoring above average, and store all data permanently in **MongoDB** along with date and time.
 
-## Features
-
-- Input **any number of students** dynamically.  
-- Enter **student names** and **marks** (supports negative and large positive values).  
-- Calculates **average mark** automatically.  
-- Shows **students scoring above average**.  
-- **Saves data to MongoDB** (`AVG` database, `STU` collection).  
-- Optionally displays **all previous records**.  
+As part of today’s task, this project was enhanced using **professional GitHub workflow practices** and **secure environment variable configuration**.
 
 ---
 
-## Algorithm
+## 🎯 Task Given (Today)
 
-1. Connect to MongoDB (`AVG` database, `STU` collection).  
-2. Take input for the **number of students**.  
-3. Dynamically generate input fields for **student names and marks**.  
-4. When the **Calculate & Save** button is clicked:  
-   - Compute the **average mark**.  
-   - Display **students with marks above average**.  
-   - Save the **student data and average** to MongoDB.  
-5. Optional: Display all **previous records** stored in MongoDB.  
+### Task 1: GitHub Commands Using VS Code
+- Work with an **existing GitHub repository**
+- Learn and use basic Git commands inside **VS Code**
+- Commit and push changes correctly
+
+### Task 2: Configuration Using `.env`
+- Store sensitive values such as:
+  - MongoDB URL
+  - Database name
+  - Collection name
+- Create a `config.py` file to access environment variables
+- Learn:
+  - How to create a `.env` file
+  - How to store values inside `.env`
+  - How to read environment variables in Python
+  - How to prevent `.env` from being uploaded to GitHub using `.gitignore`
 
 ---
 
-## Installation & Usage
-```
-git clone https://github.com/your-username/dynamic-student-marks.git
-cd dynamic-student-marks
-```
-## Install dependencies:
-```
-pip install streamlit pymongo
-streamlit run marks_analyzer.py
-```
+## ✅ What I Successfully Completed
 
-## Program / Code
+### 🔹 GitHub (Task 1)
+- Cloned an existing GitHub repository using VS Code
+- Worked inside the correct Git-tracked project folder
+- Used Git commands:
+  - `git status`
+  - `git add .`
+  - `git commit`
+  - `git push`
+- Successfully pushed changes to the `main` branch
+
+### 🔹 Environment Variables & Configuration (Task 2)
+- Created a `.env` file to store sensitive configuration data
+- Stored MongoDB credentials securely
+- Created `config.py` to load environment variables
+- Used environment variables inside the main application
+- Added `.env` to `.gitignore`
+- Verified that:
+  - `.env` exists locally
+  - `.env` is NOT visible on GitHub
+
+This follows **industry-standard security practices**.
+
+---
+
+## 🔐 Project Structure
+marks-analyzer-dynamic/
+│
+├── marks_analyzer.py # Main Streamlit application
+├── config.py # Environment variable loader
+├── .gitignore # Prevents pushing .env
+├── .env # Environment variables (local only)
+├── requirements.txt # Dependencies
+├── README.md # Documentation
+└── .git/ # Git repository data
+
+
+---
+
+## ✨ Application Features
+
+- Dynamic input for **any number of students**
+- Accepts **negative and large positive marks** (error correction)
+- Automatically calculates **average marks**
+- Displays **students scoring above average**
+- Saves all data to **MongoDB**
+- Stores **date and time** for each record
+- Option to view **all previous records**
+
+---
+
+## 🧠 Application Algorithm
+
+1. Connect to MongoDB using environment variables  
+2. Ask user for number of students  
+3. Dynamically generate input fields for student names and marks  
+4. On clicking **Calculate & Save**:
+   - Calculate the average mark  
+   - Display students above average  
+   - Save data to MongoDB with date & time  
+5. Optionally display all previously stored records  
+
+---
+
+## ⚙️ Technologies Used
+
+- Python  
+- Streamlit  
+- MongoDB  
+- Git & GitHub  
+- VS Code  
+- python-dotenv  
+
+---
+
+## 💻 Program / Source Code
 
 ```python
 import streamlit as st
 from pymongo import MongoClient
 from datetime import datetime
+import config
 
 # ---------------- MongoDB Connection ----------------
-client = MongoClient("mongodb://localhost:27017/")
-db = client["AVG"]
-collection = db["STU"]
+client = MongoClient(config.MONGO_URL)
+db = client[config.DB_NAME]
+collection = db[config.COLLECTION_NAME]
 
 st.success("Connected to MongoDB")
 
@@ -70,14 +137,14 @@ students = []
 for i in range(int(num_students)):
     name = st.text_input(f"Enter name of student {i + 1}")
 
-    # 🔴 Name validation (only alphabets)
+    # Name validation (only alphabets)
     if name and not name.replace(" ", "").isalpha():
         st.error("Name must contain only alphabets")
         st.stop()
 
     mark = st.number_input(
         f"Enter mark of {name if name else 'Student ' + str(i + 1)}",
-        min_value=None,     # ✅ Allows negative marks
+        min_value=None,      # Allows negative values
         max_value=100.0,
         step=1.0
     )
@@ -92,11 +159,10 @@ if st.button("Calculate & Save"):
     marks = [s["mark"] for s in students]
     average = sum(marks) / len(marks)
 
-    st.subheader("Average Mark: {:.2f}".format(average))
-
+    st.subheader(f"Average Mark: {average:.2f}")
     st.write("Students above average:")
-    above_avg = False
 
+    above_avg = False
     for s in students:
         if s["mark"] > average:
             st.write(f"{s['name']} : {s['mark']}")
@@ -120,56 +186,53 @@ if st.checkbox("Show all saved records"):
 
     for rec in records:
         created_time = rec["created_at"].strftime("%d-%m-%Y %I:%M %p")
-        st.write("Date & Time: " + created_time)
-        st.write("Average: {:.2f}".format(rec["average"]))
+        st.write("Date & Time:", created_time)
+        st.write(f"Average: {rec['average']:.2f}")
 
         for s in rec["students"]:
             st.write(f"{s['name']} : {s['mark']}")
 
         st.write("--------------------------------")
-)
 ```
 
-## Sample Output
+## 📸 Output Screenshots
 
-1. Enter 2 students:  
-   - sajith: -90.00
-   - raju: 40.00 
-
-**Output Screenshot:**  
-
-<img width="1919" height="1079" alt="image" src="https://github.com/user-attachments/assets/f8d86973-d8f4-4084-96a2-a5384af30372" />
-
-**Mongo DB entry:**
-<img width="1919" height="1079" alt="image" src="https://github.com/user-attachments/assets/8d50e2f7-06dc-4f93-a6e6-6f72a7ee67f8" />
+### 🖥️ Application Output
+<img width="1068" height="1010" alt="image" src="https://github.com/user-attachments/assets/17d7b185-462a-4946-9ff1-863920c46e49" />
 
 ---
+
+### 🗄️ MongoDB Records
+<!-- Upload MongoDB records screenshot here -->
+<img width="1742" height="976" alt="mm" src="https://github.com/user-attachments/assets/eaf53978-a6b7-4c9a-b60e-f22480b46a3d" />
+
+---
+
+### 🔐 `.env` File (Local Configuration)
+<img width="1405" height="532" alt="image" src="https://github.com/user-attachments/assets/67a24611-da28-494b-9dce-2b57e7341207" />
+
+---
+
+### ⚙️ `config.py` File
+<img width="1209" height="459" alt="image" src="https://github.com/user-attachments/assets/fcd03a6e-0cb2-4167-84a4-71557b133355" />
+
+---
+
+### 🌐 GitHub Repository View
+<img width="1919" height="963" alt="image" src="https://github.com/user-attachments/assets/075efe83-078d-4210-830f-028e42ec73b1" />
 
 ## Conclusion
 
-The **Student Marks Analyzer** app is a dynamic tool that allows:  
+This project successfully demonstrates the development of a **dynamic and secure Student Marks Analyzer application** using **Python, Streamlit, and MongoDB**.
 
-- Inputting any number of student marks, including **negative values** for **error correction**.  
-- Calculating the **average mark** and identifying students who scored above average.  
-- Saving all data to **MongoDB** for persistent storage and future reference.  
-- Viewing all **previous records** directly within the app.  
+Through this task, I learned how to:
+- Work professionally with an **existing GitHub repository**
+- Use essential **Git commands** inside VS Code
+- Securely manage sensitive data using **environment variables (`.env`)**
+- Protect confidential information using **`.gitignore`**
+- Integrate a Python application with **MongoDB**
+- Build a dynamic, real-world web application using **Streamlit**
 
-### Benefits of Error Correction
-
-- Supports **correction of input mistakes**, such as negative or unusually high marks.  
-- Helps teachers/admins **validate data** before final reporting.  
-- Improves accuracy and reliability of student performance analysis.  
-
-### Personal Learning Outcomes
-
-While building this project, I learned:  
-
-- How to use **Streamlit** to create dynamic web apps.  
-- How to **connect and store data in MongoDB** from Python.  
-- How to handle **user input errors** and make the app robust for real-world scenarios.  
-- How to calculate and analyze **statistics dynamically** for multiple students.  
-
-This project strengthened my understanding of **Python, web app design, databases, and data validation**, while creating a **practical tool for real-world use**.
-
----
+By separating configuration data from source code and following GitHub best practices, the project is now **secure, maintainable, and scalable**.  
+This task strengthened my understanding of **version control, secure configuration management, database integration, and professional software development workflows**, making the application suitable for real-world usage.
 
