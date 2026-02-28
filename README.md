@@ -184,13 +184,13 @@ Sajith has been successfully removed from the database.
 ---
 ![alt text](image-6.png)
 
-📌 API Endpoints Summary
+## 📌 API Endpoints Summary
 Method	Endpoint	Description
 GET	/students	Retrieve all students
 POST	/students	Add new student
 PUT	/students	Update student mark
 DELETE	/students/{name}	Delete student
-🎯 Learning Outcomes
+## 🎯 Learning Outcomes
 
 Through this project, I learned:
 
@@ -204,6 +204,6 @@ Structuring backend applications in a modular way
 
 Using Swagger UI for API documentation and testing
 
-👨‍💻 Author
+## 👨‍💻 Author
 
 Developed as part of internship training to demonstrate backend API development skills using FastAPI and MongoDB.
