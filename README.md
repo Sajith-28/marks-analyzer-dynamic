@@ -81,7 +81,7 @@ The application connects to MongoDB and stores student records dynamically.
 All operations are performed using Swagger UI:
 
 http://127.0.0.1:8000/docs
-✅ Step 1: Initial GET Request
+## ✅ Step 1: Initial GET Request
 
 Open /docs
 
@@ -95,7 +95,7 @@ Click Execute
 []
 
 ![alt text](image.png)
-✅ Step 2: Add Students (POST)
+## ✅ Step 2: Add Students (POST)
 
 Click POST → Try it out
 
@@ -121,7 +121,7 @@ Add students one by one:
 ![alt text](image-1.png)
 
 
-✅ Step 3: GET After Insertion
+## ✅ Step 3: GET After Insertion
 
 Click GET → Execute
 
@@ -135,7 +135,7 @@ Click GET → Execute
 
 ![alt text](image-2.png)
 
-✅ Step 4: Update Student Mark (PUT)
+## ✅ Step 4: Update Student Mark (PUT)
 
 Click PUT → Try it out
 
@@ -159,7 +159,7 @@ Now perform GET again.
 ![alt text](image-3.png)
 ---
 ![alt text](image-4.png)
-✅ Step 5: Delete Student (DELETE)
+## ✅ Step 5: Delete Student (DELETE)
 
 Click DELETE → Try it out
 
@@ -171,7 +171,7 @@ Click Execute
 
 Now perform GET again.
 
-🔎 Final Output:
+## 🔎 Final Output:
 [
   {"name": "shyam", "mark": 40},
   {"name": "yuvan", "mark": 80},
