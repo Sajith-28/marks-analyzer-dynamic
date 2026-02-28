@@ -1,175 +1,209 @@
-# Dynamic Student Marks Analyzer with MongoDB
+# 📊 Student Mark Analyzer API
+## FastAPI + MongoDB Implementation
+## 🚀 Project Overview
 
-A **Streamlit app** to input student names and marks (including negative values), calculate the average, identify students scoring above average, and save all data to **MongoDB**. Supports **error correction** scenarios.
+This project is a Student Mark Analyzer application that was successfully converted from a simple Python-based program into a fully functional REST API using FastAPI and MongoDB.
 
----
+## The API performs complete CRUD operations:
 
-## Features
+✅ Create student records
 
-- Input **any number of students** dynamically.  
-- Enter **student names** and **marks** (supports negative and large positive values).  
-- Calculates **average mark** automatically.  
-- Shows **students scoring above average**.  
-- **Saves data to MongoDB** (`AVG` database, `STU` collection).  
-- Optionally displays **all previous records**.  
+✅ Read student records
 
----
+✅ Update student marks
 
-## Algorithm
+✅ Delete student records
 
-1. Connect to MongoDB (`AVG` database, `STU` collection).  
-2. Take input for the **number of students**.  
-3. Dynamically generate input fields for **student names and marks**.  
-4. When the **Calculate & Save** button is clicked:  
-   - Compute the **average mark**.  
-   - Display **students with marks above average**.  
-   - Save the **student data and average** to MongoDB.  
-5. Optional: Display all **previous records** stored in MongoDB.  
+This project demonstrates backend development concepts including API design, database integration, modular structure, and Swagger documentation.
 
----
+## 🛠️ Technologies Used
 
-## Installation & Usage
+🐍 Python
+
+⚡ FastAPI
+
+🍃 MongoDB (localhost:27017)
+
+🔄 REST API (GET, POST, PUT, DELETE)
+
+📘 Swagger UI (/docs)
+
+🔐 python-dotenv
+
+## 📁 Project Structure
 ```
-git clone https://github.com/your-username/dynamic-student-marks.git
-cd dynamic-student-marks
-```
-## Install dependencies:
-```
-pip install streamlit pymongo
-streamlit run marks_analyzer.py
-```
-
-## Program / Code
-
-```python
-import streamlit as st
-from pymongo import MongoClient
-from datetime import datetime
-
-# ---------------- MongoDB Connection ----------------
-client = MongoClient("mongodb://localhost:27017/")
-db = client["AVG"]
-collection = db["STU"]
-
-st.success("Connected to MongoDB")
-
-# ---------------- App Title ----------------
-st.title("Student Marks Analyzer")
-st.write("Enter student names and marks. Date and time are saved automatically.")
-
-# ---------------- Number of Students ----------------
-num_students = st.number_input(
-    "How many students?",
-    min_value=1,
-    step=1
-)
-
-students = []
-
-# ---------------- Input Section ----------------
-for i in range(int(num_students)):
-    name = st.text_input(f"Enter name of student {i + 1}")
-
-    # 🔴 Name validation (only alphabets)
-    if name and not name.replace(" ", "").isalpha():
-        st.error("Name must contain only alphabets")
-        st.stop()
-
-    mark = st.number_input(
-        f"Enter mark of {name if name else 'Student ' + str(i + 1)}",
-        min_value=None,     # ✅ Allows negative marks
-        max_value=100.0,
-        step=1.0
-    )
-
-    students.append({
-        "name": name if name else f"Student {i + 1}",
-        "mark": mark
-    })
-
-# ---------------- Calculate & Save ----------------
-if st.button("Calculate & Save"):
-    marks = [s["mark"] for s in students]
-    average = sum(marks) / len(marks)
-
-    st.subheader("Average Mark: {:.2f}".format(average))
-
-    st.write("Students above average:")
-    above_avg = False
-
-    for s in students:
-        if s["mark"] > average:
-            st.write(f"{s['name']} : {s['mark']}")
-            above_avg = True
-
-    if not above_avg:
-        st.info("No student scored above average")
-
-    document = {
-        "students": students,
-        "average": average,
-        "created_at": datetime.utcnow()
-    }
-
-    collection.insert_one(document)
-    st.success("Data saved with date and time")
-
-# ---------------- Show Records ----------------
-if st.checkbox("Show all saved records"):
-    records = collection.find().sort("created_at", -1)
-
-    for rec in records:
-        created_time = rec["created_at"].strftime("%d-%m-%Y %I:%M %p")
-        st.write("Date & Time: " + created_time)
-        st.write("Average: {:.2f}".format(rec["average"]))
-
-        for s in rec["students"]:
-            st.write(f"{s['name']} : {s['mark']}")
-
-        st.write("--------------------------------")
-)
+student-mark-analyzer/
+│
+├── main.py                # FastAPI application & API routes
+├── config.py              # MongoDB connection setup
+├── marks_analyzer.py      # Business logic functions
+├── requirements_api.txt   # API-specific dependencies
+├── requirements.txt       # General project dependencies
+├── .env                   # Environment variables
+├── .gitignore             # Git ignored files
+└── README.md              # Project documentation
 ```
 
-## Sample Output
+## 🔄 Conversion to FastAPI
 
-1. Enter 2 students:  
-   - sajith: -90.00
-   - raju: 40.00 
+The original Python logic was modularized and converted into an API-based architecture:
 
-**Output Screenshot:**  
+Separated business logic into marks_analyzer.py
 
-<img width="1919" height="1079" alt="image" src="https://github.com/user-attachments/assets/f8d86973-d8f4-4084-96a2-a5384af30372" />
+Added database configuration in config.py
 
-**Mongo DB entry:**
-<img width="1919" height="1079" alt="image" src="https://github.com/user-attachments/assets/8d50e2f7-06dc-4f93-a6e6-6f72a7ee67f8" />
+Created REST endpoints in main.py
 
+Connected MongoDB using environment variables
+
+Enabled auto-generated API documentation using Swagger
+
+## ⚙️ How to Run the Project
+1️⃣ Install Dependencies
+pip install -r requirements_api.txt
+2️⃣ Start FastAPI Server
+uvicorn main:app --reload
+3️⃣ Open Swagger UI
+
+Open in browser:
+
+http://127.0.0.1:8000/docs
+🗄️ MongoDB Configuration
+
+Make sure MongoDB is running locally:
+
+mongodb://localhost:27017
+
+The application connects to MongoDB and stores student records dynamically.
+
+🧪 API Testing Demonstration (Step-by-Step)
+
+All operations are performed using Swagger UI:
+
+http://127.0.0.1:8000/docs
+✅ Step 1: Initial GET Request
+
+Open /docs
+
+Click GET
+
+Click Try it out
+
+Click Execute
+
+🔎 Output:
+[]
+
+![alt text](image.png)
+✅ Step 2: Add Students (POST)
+
+Click POST → Try it out
+
+Add students one by one:
+
+{
+  "name": "shyam",
+  "mark": 60
+}
+{
+  "name": "sajith",
+  "mark": 70
+}
+{
+  "name": "yuvan",
+  "mark": 80
+}
+{
+  "name": "ram",
+  "mark": 90
+}
+
+![alt text](image-1.png)
+
+
+✅ Step 3: GET After Insertion
+
+Click GET → Execute
+
+🔎 Output:
+[
+  {"name": "shyam", "mark": 60},
+  {"name": "sajith", "mark": 70},
+  {"name": "yuvan", "mark": 80},
+  {"name": "ram", "mark": 90}
+]
+
+![alt text](image-2.png)
+
+✅ Step 4: Update Student Mark (PUT)
+
+Click PUT → Try it out
+
+Update Shyam's mark to 40:
+
+{
+  "name": "shyam",
+  "mark": 40
+}
+
+Click Execute
+
+Now perform GET again.
+
+🔎 Updated Output:
+{
+  "name": "shyam",
+  "mark": 40
+}
+
+![alt text](image-3.png)
 ---
+![alt text](image-4.png)
+✅ Step 5: Delete Student (DELETE)
 
-## Conclusion
+Click DELETE → Try it out
 
-The **Student Marks Analyzer** app is a dynamic tool that allows:  
+Delete student:
 
-- Inputting any number of student marks, including **negative values** for **error correction**.  
-- Calculating the **average mark** and identifying students who scored above average.  
-- Saving all data to **MongoDB** for persistent storage and future reference.  
-- Viewing all **previous records** directly within the app.  
+name = sajith
 
-### Benefits of Error Correction
+Click Execute
 
-- Supports **correction of input mistakes**, such as negative or unusually high marks.  
-- Helps teachers/admins **validate data** before final reporting.  
-- Improves accuracy and reliability of student performance analysis.  
+Now perform GET again.
 
-### Personal Learning Outcomes
+🔎 Final Output:
+[
+  {"name": "shyam", "mark": 40},
+  {"name": "yuvan", "mark": 80},
+  {"name": "ram", "mark": 90}
+]
 
-While building this project, I learned:  
+Sajith has been successfully removed from the database.
 
-- How to use **Streamlit** to create dynamic web apps.  
-- How to **connect and store data in MongoDB** from Python.  
-- How to handle **user input errors** and make the app robust for real-world scenarios.  
-- How to calculate and analyze **statistics dynamically** for multiple students.  
-
-This project strengthened my understanding of **Python, web app design, databases, and data validation**, while creating a **practical tool for real-world use**.
-
+![alt text](image-5.png)
 ---
+![alt text](image-6.png)
 
+📌 API Endpoints Summary
+Method	Endpoint	Description
+GET	/students	Retrieve all students
+POST	/students	Add new student
+PUT	/students	Update student mark
+DELETE	/students/{name}	Delete student
+🎯 Learning Outcomes
+
+Through this project, I learned:
+
+Converting a traditional Python application into a REST API
+
+Implementing CRUD operations in FastAPI
+
+Integrating MongoDB with FastAPI
+
+Structuring backend applications in a modular way
+
+Using Swagger UI for API documentation and testing
+
+👨‍💻 Author
+
+Developed as part of internship training to demonstrate backend API development skills using FastAPI and MongoDB.
